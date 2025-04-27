@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Host Room</title>
+</head>
+<body>
+  <h2>Host a New Room</h2>
+  <form action="/room/host" method="POST">
+    <input type="text" name="name" placeholder="Room Name" required /><br />
+    <input type="password" name="password" placeholder="Room Password" required /><br />
+    <button type="submit">Create Room</button>
+  </form>
+  <a href="/room/dashboard">Back to Dashboard</a>
+</body>
+</html>

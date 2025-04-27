@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Friends</title>
+</head>
+<body>
+    <h2>Welcome, <%= user.email %></h2>
+    <h3>Search for a friend to chat</h3>
+    <form id="searchForm">
+        <input type="email" id="friendEmail" placeholder="Enter friend's email" required>
+        <button type="submit">Start Chat</button>
+    </form>
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let friendEmail = document.getElementById('friendEmail').value;
+            window.location.href = `/chat?friend=${friendEmail}`;
+        });
+    </script>
+</body>
+</html>

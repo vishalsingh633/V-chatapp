@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+}
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+button {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 5px;
+}
+button:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+}
+.otp-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.otp-inputs input {
+    width: 40px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}

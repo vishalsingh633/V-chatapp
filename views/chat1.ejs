@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Room - <%= room.name %></title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h2>Room: <%= room.name %></h2>
+  <p>Logged in as: <%= user.username %></p>
+
+  <div id="messages"></div>
+
+  <form id="msg-form">
+    <input type="text" id="msg" autocomplete="off" placeholder="Type a message" />
+    <button type="submit">Send</button>
+  </form>
+
+  <% if (room.admin._id.toString() === user._id.toString()) { %>
+    <button onclick="endRoom()">End Room</button>
+  <% } %>
+
+  <script>
+    const socket = io();
+    const roomId = "<%= room._id %>";
+    const user = {
+      _id: "<%= user._id %>",
+      username: "<%= user.username %>"
+    };
+   
+    socket.emit("join-room", { roomId, user });
+
+    const form = document.getElementById("msg-form");
+    const msgInput = document.getElementById("msg");
+    const messages = document.getElementById("messages");
+
+   // 🔄 Load chat from localStorage
+   const messages1 = JSON.parse(localStorage.getItem(`chat-${roomId}`)) || [];
+    messages.forEach(({ username, content }) => {
+      addMessage(username, content);
+    });
+    messages.scrollTop = messages.scrollHeight;
+    
+
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const msg = msgInput.value;
+      if (msg) {
+        socket.emit("send-message", { roomId, message: msg, user });
+        msgInput.value = "";
+      }
+    });
+
+    socket.on("receive-message", ({ message, user }) => {
+      const div = document.createElement("div");
+      div.textContent = `${user.username}: ${message}`;
+      messages.appendChild(div);
+    });
+
+    function addMessage(username, content) {
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>${username}:</strong> ${content}`;
+      messages.appendChild(p);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function saveMessage(msg) {
+      const chat = JSON.parse(localStorage.getItem(`chat-${roomId}`)) || [];
+      chat.push(msg);
+      localStorage.setItem(`chat-${roomId}`, JSON.stringify(chat));
+    }
+
+
+
+    socket.on("room-ended", () => {
+      alert("Room has been ended by admin.");
+      window.location.href = "/room/dashboard";
+    });
+
+    function endRoom() {
+      if (confirm("Are you sure you want to end this room?")) {
+        socket.emit("end-room", roomId);
+      }
+    }
+  </script>
+</body>
+</html>

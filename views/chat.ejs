@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Room - <%= room.name %></title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+  /*  body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: #485768;
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar h2 {
+      margin: 0;
+    }
+
+    .navbar .nav-buttons button {
+      margin-left: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: white;
+      color: #007bff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .chat-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+    }
+
+    .members {
+      width: 150px;
+      background: grey;
+      padding: 1rem;
+      overflow-y: auto;
+      border-right: 1px solid #ccc;
+    }
+
+    .members h3 {
+      margin-top: 0;
+    }
+
+    .members ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .members li {
+      margin: 0.5rem 0;
+    }
+
+    .chat {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f0f2f5;
+    }
+#messages {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      max-width: 70%;
+      margin-bottom: 0.5rem;
+      padding: 0.7rem;
+      border-radius: 10px;
+      word-wrap: break-word;
+    }
+
+
+  #messages {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    background-image: url('/bg2.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .message {
+    max-width: 60%;
+    padding: 0.75rem 1rem;
+    border-radius: 15px;
+    backdrop-filter: blur(4px);
+    background-color: rgba(255, 255, 255, 0.7); 
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    word-wrap: break-word;
+  }
+
+  .my-message {
+    align-self: flex-end;
+    background-color: rgba(0, 123, 255, 0.75); 
+    color: white;
+  }
+
+  .other-message {
+    align-self: flex-start;
+    background-color: rgba(240, 240, 240, 0.85);
+  }
+
+
+
+.message-left {
+      align-self: flex-start;
+      background: #e0e0e0;
+    }
+
+    .message-right {
+      align-self: flex-end;
+      background: #007bff;
+      color: white;
+    }
+
+    #msg-form {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #ccc;
+      background: gray;
+    }
+
+    #msg-form input {
+      flex: 1;
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+    }
+
+    #msg-form button {
+      padding: 0.7rem 1.2rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #msg-form button:hover {
+      background: #0056b3;
+    }
+   
+
+    #chat-area {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+  #messages {
+    flex-grow: 1;
+    padding-bottom: 0;
+  }
+
+  #msg-form {
+    position: sticky;
+    bottom: 0;
+    background: rgba(72, 87, 104, 0.95); 
+    padding: 0.7rem 1rem;
+    border-top: 1px solid #ccc;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 5;
+  }
+
+  #msg-form input {
+    flex-grow: 1;
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+  }
+
+  #msg-form button {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  #msg-form button:hover {
+    background: #0056b3;
+  }
+}
+
+
+
+    .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  .hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 4px 0;
+  }
+
+
+  .mobile-menu {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  background-color: #485768;
+  color: white;
+  padding: 1rem;
+  gap: 1rem;
+  text-align: center;
+}
+
+
+
+  .mobile-menu form,
+.mobile-menu .members {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-menu form button {
+  width: 80%;
+}
+
+.mobile-menu .members ul {
+  padding: 0;
+  list-style: none;
+  margin: 0;
+  width: 100%;
+}
+
+.mobile-menu .members li {
+  padding: 0.25rem 0;
+}
+
+.mobile-menu form button {
+  width: 80%;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.mobile-menu form button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+  color: #e0e0ff;
+  border-color: #cce;
+}
+
+
+
+
+
+  @media (max-width: 768px) {
+    .nav-buttons {
+      display: none;
+    }
+
+    .hamburger {
+      display: flex;
+    }
+
+    .chat-container {
+      flex-direction: column;
+    }
+
+    .members {
+      display: none;
+    }
+
+    .members.active {
+      display: block;
+      background-color: #485768;
+      color: white;
+    }
+  }*/
+  body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  background-color: #485768;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar h2 {
+  margin: 0;
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.nav-buttons form button {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Hamburger styles */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  background-color: #485768;
+  color: white;
+  padding: 1rem;
+  gap: 1rem;
+  text-align: center;
+}
+
+.mobile-menu form,
+.mobile-menu .members {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-menu form button {
+  width: 80%;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.mobile-menu form button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+  color: #e0e0ff;
+  border-color: #cce;
+}
+
+.mobile-menu .members ul {
+  padding: 0;
+  list-style: none;
+  margin: 0;
+  width: 100%;
+}
+
+.mobile-menu .members li {
+  padding: 0.25rem 0;
+}
+
+.chat-container {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.members {
+  width: 150px;
+  background: rgb(77 77 77);
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
+
+.members h3 {
+  margin-top: 0;
+}
+
+.members ul {
+  list-style: none;
+  padding: 0;
+}
+
+.members li {
+  margin: 0.5rem 0;
+}
+
+.chat {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f0f2f5;
+}
+
+#chat-area {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-grow: 1;
+}
+
+#messages {
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background-image: url('/bg2.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.message {
+  max-width: 60%;
+    padding: 0.75rem 1rem;
+    border-radius: 15px;
+    backdrop-filter: blur(4px);
+    background-color: rgba(255, 255, 255, 0.7); 
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    word-wrap: break-word;
+}
+
+.message-left {
+  align-self: flex-start;
+  background: #e0e0e0;
+}
+
+.message-right {
+  align-self: flex-end;
+  background: #007bff;
+  color: white;
+}
+
+#msg-form {
+  display: flex;
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+  background: gray;
+}
+
+#msg-form input {
+  flex: 1;
+  padding: 0.7rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+#msg-form button {
+  padding: 0.7rem 1.2rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#msg-form button:hover {
+  background: #0056b3;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .members {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .mobile-menu {
+    display: flex;
+  }
+
+  .nav-buttons {
+    display: none;
+  }
+
+  #msg-form {
+    position: sticky;
+    bottom: 0;
+    background: rgba(88, 118, 153, 0.95);
+    padding: 0.7rem 1rem;
+    border-top: 1px solid #ccc;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 5;
+  }
+
+  #msg-form input {
+    flex-grow: 1;
+    padding: 0.6rem;
+    font-size: 1rem;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+  }
+
+  #msg-form button {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  #msg-form button:hover {
+    background: #0056b3;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <h2>Room: <%= room.name %></h2>
+
+    <!-- Hamburger for small screens -->
+    <div class="hamburger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <div class="nav-buttons">
+      <form action="/room/end/<%= room._id %>" method="POST" style="display:inline;">
+        <button type="submit">End Room</button>
+      </form>
+      <form action="/room/leave" method="POST" style="display:inline;">
+        <button type="submit">Exit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div class="mobile-menu" id="mobileMenu">
+    <form action="/room/end/<%= room._id %>" method="POST">
+      <button type="submit">End Room</button>
+    </form>
+    <form action="/room/leave" method="POST">
+      <button type="submit">Exit</button>
+    </form>
+    <div class="members active" id="mobileMembers">
+      <h3>Members</h3>
+      <ul id="member-list-mobile">
+        <% room.members.forEach(member => { %>
+          <li><%= member.username %></li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="chat-container">
+    <!-- Desktop members list -->
+    <div class="members" id="desktopMembers">
+      <h3>Members</h3>
+      <ul id="member-list">
+        <% room.members.forEach(member => { %>
+          <li><%= member.username %></li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <div class="chat">
+      <div id="chat-area">
+        <div id="messages"></div>
+        <form id="msg-form">
+          <input type="text" id="msg" autocomplete="off" placeholder="Type a message" />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+    
+
+  <script>
+    const socket = io();
+    const roomId = "<%= room._id %>";
+    const currentUserId = "<%= user._id %>";
+    const currentUsername = "<%= user.username %>";
+
+    socket.emit("join-room", { roomId, user: { _id: currentUserId, username: currentUsername } });
+
+    const form = document.getElementById("msg-form");
+    const msgInput = document.getElementById("msg");
+    const messages = document.getElementById("messages");
+    const memberList = document.getElementById("member-list");
+    const memberListMobile = document.getElementById("member-list-mobile");
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const msg = msgInput.value.trim();
+      if (msg) {
+        socket.emit("send-message", { roomId, message: msg, user: { _id: currentUserId, username: currentUsername } });
+        msgInput.value = "";
+      }
+    });
+
+    socket.on("receive-message", ({ message, user }) => {
+      const div = document.createElement("div");
+      div.classList.add("message");
+      div.classList.add(user._id === currentUserId ? "message-right" : "message-left");
+      div.innerHTML = `<strong>${user.username}</strong><br>${message}`;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    });
+
+    socket.on("update-member-list", members => {
+      memberList.innerHTML = "";
+      memberListMobile.innerHTML = "";
+      members.forEach(member => {
+        const li = document.createElement("li");
+        li.textContent = member.username;
+        memberList.appendChild(li);
+        memberListMobile.appendChild(li.cloneNode(true));
+      });
+    });
+
+    socket.on("room-ended", () => {
+      alert("The room has ended.");
+      window.location.href = "/room/dashboard";
+    });
+
+    function toggleMenu() {
+      const menu = document.getElementById("mobileMenu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
+  </script>
+</body>
+</html>

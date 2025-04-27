@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Host Room</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1611223480243-9e5f9e8f52c1?auto=format&fit=crop&w=1950&q=80')
+        no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .host-container {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #4facfe;
+      outline: none;
+      box-shadow: 0 0 5px rgba(79, 172, 254, 0.5);
+    }
+
+    .password-strength {
+      width: 100%;
+      height: 6px;
+      background-color: #ccc;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .strength-bar {
+      height: 100%;
+      border-radius: 5px;
+      width: 0;
+      transition: width 0.3s ease-in-out;
+    }
+
+    .strength-weak {
+      background-color: #ff4d4d;
+    }
+
+    .strength-medium {
+      background-color: #ffcc00;
+    }
+
+    .strength-strong {
+      background-color: #4caf50;
+    }
+
+    .strength-label {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 5px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .weak-label {
+      color: #ff4d4d;
+    }
+
+    .medium-label {
+      color: #ffcc00;
+    }
+
+    .strong-label {
+      color: #4caf50;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 25%;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #000000;
+    }
+
+    .btn-host {
+      width: 100%;
+      padding: 12px;
+      background-color: #4facfe;
+      color: #fff;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-host:hover {
+      background-color: #3a8bd4;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #4facfe;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .host-container {
+        padding: 30px 20px;
+      }
+
+      .form-group input {
+        padding: 10px 12px;
+      }
+
+      .btn-host {
+        padding: 10px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="host-container">
+    <h2>Host a New Room</h2>
+    <form action="/room/host" method="POST">
+      <div class="form-group">
+        <input type="text" name="name" placeholder="Room Name" required />
+      </div>
+      <div class="form-group" style="position: relative;">
+        <input type="password" name="password" id="password" placeholder="Room Password" required oninput="checkPasswordStrength()"/>
+        <i id="password-toggle" class="password-toggle" onclick="togglePassword()">👁️</i>
+        <div class="password-strength">
+          <div id="strength-bar" class="strength-bar"></div>
+        </div>
+        <div id="strength-label" class="strength-label"></div>
+      </div>
+      <button type="submit" class="btn-host">Create Room</button>
+    </form>
+    <a class="back-link" href="/room/dashboard">← Back to Dashboard</a>
+  </div>
+
+  <script>
+    function checkPasswordStrength() {
+      const password = document.getElementById('password').value;
+      const strengthBar = document.getElementById('strength-bar');
+      const strengthLabel = document.getElementById('strength-label');
+      let strength = 0;
+
+      // Check password length
+      if (password.length >= 8) {
+        strength += 2;
+      }
+      // Check for letters and numbers
+      if (/[a-z]/.test(password) && /\d/.test(password)) {
+        strength += 1;
+      }
+      // Check for special characters
+      if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        strength += 1;
+      }
+
+      // Update strength bar and color
+      if (strength === 0) {
+        strengthBar.style.width = '0%';
+        strengthBar.className = 'strength-bar';
+        strengthLabel.textContent = '';
+      } else if (strength === 1) {
+        strengthBar.style.width = '33%';
+        strengthBar.className = 'strength-bar strength-weak';
+        strengthLabel.textContent = 'Weak';
+        strengthLabel.className = 'strength-label weak-label';
+      } else if (strength === 2) {
+        strengthBar.style.width = '66%';
+        strengthBar.className = 'strength-bar strength-medium';
+        strengthLabel.textContent = 'Medium';
+        strengthLabel.className = 'strength-label medium-label';
+      } else {
+        strengthBar.style.width = '100%';
+        strengthBar.className = 'strength-bar strength-strong';
+        strengthLabel.textContent = 'Strong';
+        strengthLabel.className = 'strength-label strong-label';
+      }
+    }
+
+    function togglePassword() {
+      const passwordField = document.getElementById('password');
+      const passwordToggle = document.getElementById('password-toggle');
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        passwordToggle.textContent = 'Hide'; // Change icon to 'hide'
+      } else {
+        passwordField.type = 'password';
+        passwordToggle.textContent = 'Show'; // Change icon to 'show'
+      }
+    }
+  </script>
+</body>
+</html>
